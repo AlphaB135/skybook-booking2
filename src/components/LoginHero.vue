@@ -1,43 +1,35 @@
 <template>
-  <div class="hidden lg:block relative w-full h-full min-h-[600px] overflow-hidden bg-slate-900">
-    <!-- Background Image with Zoom Effect -->
-    <div class="absolute inset-0">
+  <div class="hidden lg:block relative w-full h-full min-h-[600px] rounded-l-3xl overflow-hidden">
+    <div class="w-full h-full relative mask-container">
       <img
         src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop"
         alt="Airplane wing at sunset"
-        class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000 ease-out"
+        class="absolute inset-0 w-full h-full object-cover"
       />
-      <!-- Gradient Overlays -->
-      <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-transparent"></div>
-    </div>
-
-    <!-- Content Overlay -->
-    <div class="absolute bottom-0 left-0 p-12 text-white z-10">
-      <h2 class="text-4xl font-bold mb-4 leading-tight">
-        Discover the World <br/> with Comfort
-      </h2>
-      <p class="text-blue-100 text-lg max-w-md mb-8">
-        Experience premium travel with Skybook Airlines. 
-        Your journey begins the moment you book.
-      </p>
-      
-      <!-- Decorative Elements -->
-      <div class="flex gap-4">
-        <div class="w-12 h-1 bg-orange-500 rounded-full"></div>
-        <div class="w-4 h-1 bg-white/50 rounded-full"></div>
-        <div class="w-4 h-1 bg-white/50 rounded-full"></div>
-      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.mask-container {
+  /* 
+    SVG Path: M 0,0 L 100,0 Q 92,50 85,100 L 0,100 Z
+    This defines the visible area (opaque).
+    Top-Left -> Top-Right -> Curve to Bottom-Right -> Bottom-Left -> Close
+  */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0,0 L 100,0 Q 92,50 85,100 L 0,100 Z' fill='black' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0,0 L 100,0 Q 92,50 85,100 L 0,100 Z' fill='black' /%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+</style>
+
 
 <script>
 export default {
   name: 'LoginHero'
 }
 </script>
-
-<style scoped>
-/* No extra CSS needed, using Tailwind */
-</style>

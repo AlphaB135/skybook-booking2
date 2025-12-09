@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl mx-auto">
+  <div class="w-3/5 mx-auto">
     <div class="bg-white rounded-xl shadow-lg border-2 border-blue-200 p-8">
       <div class="mb-6">
         <h2 class="text-3xl font-bold text-blue-700 mb-2">ลงทะเบียนสมาชิก</h2>
