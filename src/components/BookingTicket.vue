@@ -147,12 +147,6 @@
       </div>
     </div>
 
-    <button
-      @click="$emit('reset')"
-      class="w-full px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-medium rounded-lg hover:from-slate-700 hover:to-slate-800 transition-all shadow-md"
-    >
-      จองเที่ยวบินใหม่
-    </button>
   </div>
 </template>
 

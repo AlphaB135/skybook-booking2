@@ -67,18 +67,14 @@ app.get('/api/flights', async (req, res) => {
 app.post('/api/register', async (req, res) => {
   console.log('มีคนสมัครสมาชิก:', req.body);
   
-  // เอาข้อมูลมาจากที่เขาส่งมา
-  const name = req.body.name;
-  const phone = req.body.phone;
-  const idCard = req.body.idCard;
-  const password = req.body.password;
+  const { name, lastname, phone, idCard, password, email } = req.body;
 
   try {
     const connection = await mysql.createConnection(dbConfig);
     // เพิ่มลงฐานข้อมูล
     const [result] = await connection.execute(
-      'INSERT INTO users (name, phone, id_card, password) VALUES (?, ?, ?, ?)',
-      [name, phone, idCard, password]
+      'INSERT INTO users (name, lastname, phone, id_card, password, email) VALUES (?, ?, ?, ?, ?, ?)',
+      [name, lastname, phone, idCard, password, email]
     );
     
     await connection.end();
@@ -113,7 +109,9 @@ app.post('/api/login', async (req, res) => {
         success: true, 
         user: {
           id: user.id,
-          name: user.name,
+          name: user.name, // This is now First Name
+          lastname: user.lastname,
+          email: user.email,
           phone: user.phone,
           idCard: user.id_card
         }
@@ -183,6 +181,26 @@ app.get('/api/users/:userId/bookings', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 'Error' });
+  }
+});
+
+// 6. แก้ไขข้อมูลผู้ใช้
+app.put('/api/users/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  const { name, lastname, phone, idCard, email } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.execute(
+      'UPDATE users SET name = ?, lastname = ?, phone = ?, id_card = ?, email = ? WHERE id = ?',
+      [name, lastname, phone, idCard, email, userId]
+    );
+    await connection.end();
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Update failed' });
   }
 });
 

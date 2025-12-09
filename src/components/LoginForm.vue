@@ -3,7 +3,7 @@
     <div class="text-right mb-12">
       <div class="flex items-center justify-end gap-2">
         <h1 class="text-xl font-bold text-slate-700">Skybook Airlines</h1>
-        <Plane class="w-6 h-6 text-orange-500" />
+        <img :src="logo" alt="Logo" class="w-12 h-12 object-contain" />
       </div>
     </div>
 
@@ -60,13 +60,10 @@
 
 <script>
 import { ref } from 'vue'
-import { Plane } from 'lucide-vue-next'
+import logo from '../assets/logoapp.png'
 
 export default {
   name: 'LoginForm',
-  components: {
-    Plane
-  },
   emits: ['login', 'switch-to-register'],
   setup(props, { emit }) {
     const phone = ref('')
@@ -104,7 +101,8 @@ export default {
       phone,
       password,
       error,
-      handleSubmit
+      handleSubmit,
+      logo
     }
   }
 }

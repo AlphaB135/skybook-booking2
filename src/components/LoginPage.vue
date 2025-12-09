@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 sm:p-6 lg:p-8">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[1600px] min-h-[600px] flex overflow-hidden">
+  <div class="w-full min-h-[calc(100vh-80px)] flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-3xl w-full max-w-[1600px] flex overflow-hidden">
       <!-- Left Side - Hero Image -->
       <div class="w-1/2 hidden lg:block">
         <LoginHero />

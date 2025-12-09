@@ -5,12 +5,15 @@
       <div class="space-y-2">
         <label class="block text-sm font-medium text-slate-700">จาก</label>
         <div class="relative">
-          <input 
+          <select 
             v-model="searchString.from"
-            type="text" 
-            placeholder="จังหวัดต้นทาง"
-            class="w-full px-4 py-3 pl-10 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+            class="w-full px-4 py-3 pl-10 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none"
+          >
+            <option value="">เลือกต้นทาง</option>
+            <option v-for="city in origins" :key="city" :value="city">
+              {{ city }}
+            </option>
+          </select>
           <span class="absolute left-3 top-3.5 text-slate-400">🛫</span>
         </div>
       </div>
@@ -19,12 +22,15 @@
       <div class="space-y-2">
         <label class="block text-sm font-medium text-slate-700">ถึง</label>
         <div class="relative">
-          <input 
+          <select 
             v-model="searchString.to"
-            type="text" 
-            placeholder="จังหวัดปลายทาง"
-            class="w-full px-4 py-3 pl-10 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+            class="w-full px-4 py-3 pl-10 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none"
+          >
+            <option value="">เลือกปลายทาง</option>
+            <option v-for="city in destinations" :key="city" :value="city">
+              {{ city }}
+            </option>
+          </select>
           <span class="absolute left-3 top-3.5 text-slate-400">🛬</span>
         </div>
       </div>
@@ -56,6 +62,16 @@
 export default {
   name: "BookingForm",
   emits: ['search-flight'],
+  props: {
+    origins: {
+      type: Array,
+      default: () => []
+    },
+    destinations: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       searchString: {

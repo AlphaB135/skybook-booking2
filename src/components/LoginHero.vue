@@ -1,15 +1,16 @@
 <template>
-  <div class="hidden lg:block relative w-full h-full min-h-[600px] rounded-l-3xl overflow-hidden">
-    <div class="w-full h-full relative mask-container">
-      <img
-        src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop"
-        alt="Airplane wing at sunset"
-        class="absolute inset-0 w-full h-full object-cover"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-    </div>
+  <div class="hidden lg:block w-full overflow-hidden">
+    <img
+      :src="heroImage"
+      alt="Skybook Airlines"
+      class="w-full h-auto block object-cover"
+    />
   </div>
 </template>
+
+<script setup>
+import heroImage from '../assets/Group 10.png'
+</script>
 
 <style scoped>
 .mask-container {
@@ -26,10 +27,3 @@
   mask-repeat: no-repeat;
 }
 </style>
-
-
-<script>
-export default {
-  name: 'LoginHero'
-}
-</script>

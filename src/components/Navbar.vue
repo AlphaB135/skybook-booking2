@@ -1,46 +1,39 @@
 <template>
   <nav>
-    <div class="left">
+    <div class="left" @click="$router.push('/')" style="cursor: pointer;">
       <img src="../assets/logoapp.png" alt="Logo" class="logo" />
       <p>Skybook Airlines</p>
     </div>
 
     <div class="right">
-      <p>สวัสดี, {{ username }}</p>
+      <p>สวัสดี, {{ currentUser?.name || 'ผู้ใช้' }}</p>
 
       <div class="btn">
-        <a href="#" class="link" :class="{ active: activeTab === 'flights' }" @click.prevent="$emit('navigate', 'flights')">เที่ยวบิน</a>
-        <a href="#" class="link" :class="{ active: activeTab === 'profile' }" @click.prevent="$emit('navigate', 'profile')">ข้อมูลส่วนตัว</a>
+        <a href="#" class="link" :class="{ active: activeTab === 'flights' }" @click.prevent="$router.push('/')">เที่ยวบิน</a>
+        <a href="#" class="link" :class="{ active: activeTab === 'profile' }" @click.prevent="$router.push('/booking/passenger')">ข้อมูลส่วนตัว</a>
       </div>
 
-      <button class="logout" @click="$emit('logout')">ออกจากระบบ</button>
+      <button class="logout" @click="handleLogout">ออกจากระบบ</button>
     </div>
   </nav>
 </template>
 
-<script>
-export default {
-  name: "Navbar",
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
-  props: {
-    currentUser: {
-      type: Object,
-      default: null,
-    },
-    activeTab: {
-      type: String,
-      default: 'flights'
-    }
-  },
+const props = defineProps({
+  currentUser: Object,
+  activeTab: String
+})
 
-  emits: ['navigate', 'logout'],
+const router = useRouter()
+const authStore = useAuthStore()
 
-  computed: {
-    username() {
-      return this.currentUser ? this.currentUser.name : 'ผู้ใช้';
-    }
-  }
-};
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
 </script>
 
 <style scoped>

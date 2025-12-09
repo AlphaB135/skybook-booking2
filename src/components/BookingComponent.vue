@@ -1,5 +1,5 @@
 <template>
-  <div class="booking">
+      <div class="booking">
     <div class="cont">
       <h1>จองเที่ยวบิน</h1>
       <p>กรอกรายละเอียดและเลือกเที่ยวบินที่คุณต้องการ</p>
@@ -7,7 +7,11 @@
       <!-- ฟอร์มค้นหาเที่ยวบิน -->
       <div>
         <!-- รับ event @search-flight จาก BookingForm เมื่อกดปุ่มค้นหา -->
-        <BookingForm @search-flight="handleSearch" />
+        <BookingForm 
+          @search-flight="handleSearch" 
+          :origins="uniqueOrigins"
+          :destinations="uniqueDestinations"
+        />
       </div>
 
       <!-- ส่วนแสดงผลลัพธ์การค้นหา (แสดงเมื่อมีข้อมูล) -->
@@ -57,24 +61,46 @@ export default {
         };
     },
 
-    methods: {
-      // ฟังก์ชันทำงานเมื่อกดปุ่มค้นหา
-      handleSearch(criteria) {
-        this.hasSearched = true;
-        this.formData = criteria; // เก็บข้อมูลการค้นหา (เผื่อใช้แสดง header)
-        console.log("ค้นหาด้วยเงื่อนไข:", criteria);
+    computed: {
+      // 1. หาจังหวัดต้นทางทั้งหมดที่มีในระบบ (ไม่เอาตัวซ้ำ)
+      uniqueOrigins() {
+        // ดึงชื่อสนามบิน/จังหวัด จากข้อมูลเที่ยวบินทั้งหมด
+        const cities = this.allFlights.map(f => f.departure.airport)
+        // ใช้ Set เพื่อตัดตัวซ้ำออก แล้วแปลงกลับเป็น Array
+        return [...new Set(cities)]
+      },
 
-        // กรองข้อมูลเที่ยวบินตามเงื่อนไข
+      // 2. หาจังหวัดปลายทางทั้งหมดที่มีในระบบ (ไม่เอาตัวซ้ำ)
+      uniqueDestinations() {
+        // ดึงชื่อสนามบิน/จังหวัด จากข้อมูลเที่ยวบินทั้งหมด
+        const cities = this.allFlights.map(f => f.arrival.airport)
+        // ใช้ Set เพื่อตัดตัวซ้ำออก แล้วแปลงกลับเป็น Array
+        return [...new Set(cities)]
+      }
+    },
+
+    methods: {
+      // 3. ฟังก์ชันค้นหา: ทำงานเมื่อกดปุ่ม "ค้นหาเที่ยวบิน"
+      handleSearch(criteria) {
+        this.hasSearched = true;     // บอกระบบว่า "กดค้นหาแล้วนะ"
+        this.formData = criteria;    // เก็บสิ่งที่ User เลือกไว้
+        
+        console.log("กำลังค้นหา:", criteria);
+
+        // เริ่มการกรองข้อมูล (Filter)
         this.filteredFlights = this.allFlights.filter(flight => {
-          // ถ้ามีการเลือกจังหวัดต้นทาง ให้เช็คว่าตรงไหม (ถ้าไม่เลือกถือว่าผ่าน)
-          const matchFrom = criteria.from ? flight.from_city.includes(criteria.from.split(' ')[0]) : true;
-          // ถ้ามีการเลือกจังหวัดปลายทาง ให้เช็คว่าตรงไหม
-          const matchTo = criteria.to ? flight.to_city.includes(criteria.to.split(' ')[0]) : true;
           
+          // เช็คต้นทาง: ถ้า User เลือกมา ต้องตรงกับข้อมูลเที่ยวบิน (ถ้าไม่เลือก ถือว่าผ่าน)
+          const matchFrom = criteria.from ? flight.departure.airport === criteria.from : true;
+          
+          // เช็คปลายทาง: ถ้า User เลือกมา ต้องตรงกับข้อมูลเที่ยวบิน
+          const matchTo = criteria.to ? flight.arrival.airport === criteria.to : true;
+          
+          // ต้องตรงทั้ง 2 อย่าง (ต้นทาง และ ปลายทาง) ถึงจะผ่าน
           return matchFrom && matchTo;
         });
 
-        // ถ้าไม่ได้เลือกอะไรเลย ให้โชว์ทั้งหมด
+        // กรณีพิเศษ: ถ้าไม่ได้เลือกอะไรเลย ให้โชว์ทั้งหมด
         if (!criteria.from && !criteria.to) {
            this.filteredFlights = this.allFlights;
         }
