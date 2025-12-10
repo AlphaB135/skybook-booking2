@@ -144,40 +144,25 @@ function cancelEdit() {
   isEditing.value = false
 }
 
-async function saveEdit() {
-  if (authStore.currentUser) {
-    const payload = {
-      name: form.value.firstName,
-      lastname: form.value.lastName,
-      email: form.value.email,
-      phone: form.value.phone,
-      idCard: form.value.idCard
-    }
+  async function saveEdit() {
+    if (authStore.currentUser) {
+      const payload = {
+        name: form.value.firstName,
+        lastname: form.value.lastName,
+        email: form.value.email,
+        phone: form.value.phone,
+        idCard: form.value.idCard
+      }
 
-    try {
-      const response = await fetch(`http://localhost:3001/api/users/${authStore.currentUser.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+      // ใช้ authStore แทนการ fetch ไปยัง server
+      const result = await authStore.updateUser(authStore.currentUser.id, payload)
 
-      if (response.ok) {
-        // Update Store
-        authStore.currentUser.name = form.value.firstName
-        authStore.currentUser.lastname = form.value.lastName
-        authStore.currentUser.email = form.value.email
-        authStore.currentUser.phone = form.value.phone
-        authStore.currentUser.idCard = form.value.idCard
-        
+      if (result.success) {
         alert('บันทึกข้อมูลเรียบร้อย')
         isEditing.value = false
       } else {
-        alert('เกิดข้อผิดพลาดในการบันทึก')
+        alert('เกิดข้อผิดพลาดในการบันทึก: ' + result.error)
       }
-    } catch (err) {
-      console.error(err)
-      alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้')
     }
   }
-}
 </script>

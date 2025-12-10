@@ -13,12 +13,12 @@ export const useBookingStore = defineStore('booking', () => {
 
   // --- MOCK DATA (เที่ยวบินจำลอง) ---
   const MOCK_FLIGHTS = [
-    { id: 1, flightNumber: 'PG201', from_city: 'Bangkok (BKK)', to_city: 'Chiang Mai (CNX)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '08:00' }, arrival: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '09:15' }, duration: '1h 15m', price: 1500, seats: 20 },
-    { id: 2, flightNumber: 'PG202', from_city: 'Chiang Mai (CNX)', to_city: 'Bangkok (BKK)', departure: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '10:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '11:45' }, duration: '1h 15m', price: 1500, seats: 15 },
-    { id: 3, flightNumber: 'PG301', from_city: 'Bangkok (BKK)', to_city: 'Phuket (HKT)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '13:00' }, arrival: { city: 'Phuket', airport: 'Phuket (HKT)', time: '14:30' }, duration: '1h 30m', price: 2200, seats: 5 },
-    { id: 4, flightNumber: 'PG302', from_city: 'Phuket (HKT)', to_city: 'Bangkok (BKK)', departure: { city: 'Phuket', airport: 'Phuket (HKT)', time: '15:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '17:00' }, duration: '1h 30m', price: 2200, seats: 10 },
-    { id: 5, flightNumber: 'PG401', from_city: 'Bangkok (BKK)', to_city: 'Samui (USM)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '09:00' }, arrival: { city: 'Samui', airport: 'Samui (USM)', time: '10:00' }, duration: '1h 00m', price: 3500, seats: 8 },
-    { id: 6, flightNumber: 'PG402', from_city: 'Samui (USM)', to_city: 'Bangkok (BKK)', departure: { city: 'Samui', airport: 'Samui (USM)', time: '11:00' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '12:00' }, duration: '1h 00m', price: 3500, seats: 12 }
+    { id: 1, flightNumber: 'PG201', from_city: 'Bangkok (BKK)', to_city: 'Chiang Mai (CNX)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '08:00' }, arrival: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '09:15' }, duration: '1h 15m', price: 1500, seats: 20, class: 'Economy' },
+    { id: 2, flightNumber: 'PG202', from_city: 'Chiang Mai (CNX)', to_city: 'Bangkok (BKK)', departure: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '10:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '11:45' }, duration: '1h 15m', price: 1500, seats: 15, class: 'Economy' },
+    { id: 3, flightNumber: 'PG301', from_city: 'Bangkok (BKK)', to_city: 'Phuket (HKT)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '13:00' }, arrival: { city: 'Phuket', airport: 'Phuket (HKT)', time: '14:30' }, duration: '1h 30m', price: 2200, seats: 5, class: 'Economy' },
+    { id: 4, flightNumber: 'PG302', from_city: 'Phuket (HKT)', to_city: 'Bangkok (BKK)', departure: { city: 'Phuket', airport: 'Phuket (HKT)', time: '15:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '17:00' }, duration: '1h 30m', price: 2200, seats: 10, class: 'Economy' },
+    { id: 5, flightNumber: 'PG401', from_city: 'Bangkok (BKK)', to_city: 'Samui (USM)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '09:00' }, arrival: { city: 'Samui', airport: 'Samui (USM)', time: '10:00' }, duration: '1h 00m', price: 3500, seats: 8, class: 'Economy' },
+    { id: 6, flightNumber: 'PG402', from_city: 'Samui (USM)', to_city: 'Bangkok (BKK)', departure: { city: 'Samui', airport: 'Samui (USM)', time: '11:00' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '12:00' }, duration: '1h 00m', price: 3500, seats: 12, class: 'Economy' }
   ]
 
   // MOCK DATABASE (เก็บประวัติการจองใน RAM Browser) - อยู่ข้างนอกจะได้ไม่หายเวลาเปลี่ยนหน้า

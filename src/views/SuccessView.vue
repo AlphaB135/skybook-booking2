@@ -55,9 +55,10 @@ function bookMore() {
 }
 
 // --- 4. เมื่อโหลดหน้าเสร็จ (On Mounted) ---
+// --- 4. เมื่อโหลดหน้าเสร็จ (On Mounted) ---
 onMounted(() => {
-  // เริ่มต้นระบบนับถอยหลัง (Timer)
-  // setInterval คือการทำซ้ำๆ ทุก 1000 มิลลิวินาที (1 วินาที)
+  // auto-redirect disabled for presentation
+  /*
   timer = setInterval(() => {
     countdown.value--                  // ลดเวลาลงทีละ 1 
     
@@ -67,6 +68,7 @@ onMounted(() => {
       router.push('/booking/passenger') // สั่งให้เปลี่ยนหน้าไปที่ "ประวัติการจอง"
     }
   }, 1000)
+  */
 })
 
 // --- 5. เมื่อออกจากหน้านี้ (On Unmounted) ---

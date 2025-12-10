@@ -15,8 +15,12 @@ import { useRouter } from 'vue-router'
 const authStore = useAuthStore()
 const router = useRouter()
 
-function handleLoginSuccess(user) {
-  authStore.currentUser = user // Update store (though login action usually does this, LoginPage emits it too)
-  router.push('/')
+async function handleLoginSuccess(credentials) {
+  const result = await authStore.login(credentials)
+  if (result.success) {
+    router.push('/')
+  } else {
+    alert('เข้าสู่ระบบไม่สำเร็จ: ' + result.error)
+  }
 }
 </script>

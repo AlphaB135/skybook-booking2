@@ -70,31 +70,12 @@ export default {
     const password = ref('')
     const error = ref('')
 
-    async function handleSubmit() {
-      error.value = ''
-      try {
-        const response = await fetch('http://localhost:3001/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            phone: phone.value,
-            password: password.value
-          })
-        })
-
-        const data = await response.json()
-
-        if (response.ok) {
-          emit('login', data.user)
-        } else {
-          error.value = data.error || 'เข้าสู่ระบบไม่สำเร็จ'
-        }
-      } catch (err) {
-        console.error('Login error:', err)
-        error.value = 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
-      }
+    function handleSubmit() {
+      // ไม่ต้อง fetch เองแล้ว ส่งข้อมูลไปให้ Parent (LoginView) จัดการต่อ
+      emit('login', {
+        phone: phone.value,
+        password: password.value
+      })
     }
 
     return {
