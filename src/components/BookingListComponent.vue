@@ -35,14 +35,14 @@
             <div class="flex items-center gap-4 mb-2">
               <span class="text-lg font-bold text-blue-700">{{ booking.flight.flightNumber }}</span>
               <div class="h-4 w-px bg-slate-300"></div>
-              <span class="text-slate-700">{{ booking.flight.from }}</span>
+              <span class="text-slate-700">{{ booking.flight.from_city }}</span>
               <ArrowRight class="w-4 h-4 text-slate-400" />
-              <span class="text-slate-700">{{ booking.flight.to }}</span>
+              <span class="text-slate-700">{{ booking.flight.to_city }}</span>
             </div>
             <div class="flex items-center gap-4 text-sm text-slate-600">
               <span class="flex items-center gap-1">
                 <Clock class="w-4 h-4" />
-                {{ booking.flight.time }}
+                {{ booking.flight.departure.time }}
               </span>
               <span class="flex items-center gap-1">
                 <Armchair class="w-4 h-4" />

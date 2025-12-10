@@ -78,7 +78,9 @@ export default {
           time: f.arrival?.time || f.arrive,
           city: f.arrival?.city || this.data?.to || 'เชียงใหม่',
           airport: f.arrival?.airport || (this.data?.to || 'CNX') + ' (CNX)'
-        }
+        },
+        from_city: f.from_city, // Pass these through so they exist in History
+        to_city: f.to_city
       }));
     }
   },
