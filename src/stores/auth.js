@@ -1,65 +1,98 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
-  const currentUser = ref(null)
-  
-  // Login Action
-  async function login(credential) {
-    try {
-      const response = await fetch('http://localhost:3001/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credential)
-      })
+  // ==========================================
+  // 1. STATE (เก็บข้อมูล)
+  // ==========================================
+  const currentUser = ref(null) // เก็บข้อมูลคนล็อกอิน
+  const isAuthenticated = ref(false)
 
-      const data = await response.json()
+  // --- MOCK DATABASE (เก็บคนสมัครสมาชิกใน RAM) ---
+  // (Note: ถ้า Refresh Browser ข้อมูลนี้จะหาย ตาม Requirement)
+  const mockUsersDB = [] 
+  let userIdCounter = 1
 
-      if (response.ok) {
-        currentUser.value = data.user
-        return { success: true }
-      } else {
-        return { success: false, error: data.error || 'เข้าสู่ระบบไม่สำเร็จ' }
-      }
-    } catch (err) {
-      console.error('Login error:', err)
-      return { success: false, error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ' }
-    }
-  }
+  // ==========================================
+  // 2. ACTIONS (ฟังก์ชันทำงาน)
+  // ==========================================
 
-  // Register Action
+  // ฟังก์ชันสมัครสมาชิก (จำลอง)
   async function register(userData) {
     try {
-      const response = await fetch('http://localhost:3001/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
-      })
-      const result = await response.json()
-      
-      if (result.success) {
-        return { success: true }
-      } else {
-        return { success: false, error: result.error || 'ไม่ทราบสาเหตุ' }
+      // สร้าง User ใหม่
+      const newUser = {
+        id: userIdCounter++,
+        ...userData
       }
+      
+      // บันทึกลง "Database จำลอง"
+      mockUsersDB.push(newUser)
+      
+      console.log('✅ Registered Mock User:', newUser)
+      return { success: true, userId: newUser.id }
+
     } catch (error) {
-      console.error('Register failed:', error)
-      return { success: false, error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ' }
+      console.error('Registration failed:', error)
+      return { success: false, error: 'Registration failed' }
     }
   }
 
-  // Logout Action
-  function logout() {
-    currentUser.value = null
+  // ฟังก์ชันเข้าสู่ระบบ (จำลอง)
+  async function login(credentials) {
+    try {
+      const { phone, idCard, password } = credentials
+
+      // ค้นหาใน Mock DB
+      const user = mockUsersDB.find(u => 
+        (u.phone === phone || u.idCard === phone) && u.password === password
+      )
+
+      if (user) {
+        // เจอตัว -> ล็อกอินสำเร็จ
+        currentUser.value = user
+        isAuthenticated.value = true
+        return { success: true }
+      } else {
+        // ไม่เจอ -> ล็อกอินไม่ผ่าน
+        return { success: false, error: 'Invalid credentials' }
+      }
+    } catch (error) {
+      console.error('Login failed:', error)
+      return { success: false, error: 'Login error' }
+    }
   }
 
+  // ฟังก์ชันอัปเดตข้อมูล (จำลอง)
+  async function updateUser(userId, updatedData) {
+    const index = mockUsersDB.findIndex(u => u.id === userId)
+    if (index !== -1) {
+      // อัปเดตข้อมูลใน Mock DB
+      mockUsersDB[index] = { ...mockUsersDB[index], ...updatedData }
+      // อัปเดตข้อมูลใน currentUser ด้วย (ถ้าเป็นคนเดียวกัน)
+      if (currentUser.value && currentUser.value.id === userId) {
+        currentUser.value = { ...currentUser.value, ...updatedData }
+      }
+      return { success: true }
+    }
+    return { success: false, error: 'User not found' }
+  }
+
+  // ออกจากระบบ
+  function logout() {
+    currentUser.value = null
+    isAuthenticated.value = false
+  }
+
+  // ==========================================
+  // 3. RETURN
+  // ==========================================
   return {
     currentUser,
-    login,
+    isAuthenticated,
     register,
-    logout
+    login,
+    logout,
+    updateUser
   }
 })

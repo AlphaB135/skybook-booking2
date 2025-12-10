@@ -1,125 +1,95 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-// --- กำหนด Store ชื่อ 'booking' (ใช้เก็บข้อมูลการจองตั๋วทั้งระบบ) ---
 export const useBookingStore = defineStore('booking', () => {
-  
   // ==========================================
   // 1. STATE (ตัวแปรเก็บข้อมูล)
   // ==========================================
-  
-  const flights = ref([])           // เก็บรายการเที่ยวบินทั้งหมด (ดึงมาจาก DB)
-  const selectedFlight = ref(null)  // เก็บเที่ยวบินที่ลูกค้า "กำลังเลือก" (เช่น เที่ยวบินไปเชียงใหม่)
-  const passengerDetails = ref(null)// เก็บข้อมูลผู้โดยสาร + รายละเอียดตั๋ว (ไว้โชว์หน้าตั๋ว)
-  const bookingId = ref(null)       // เก็บ ID การจองที่ได้จาก Database (เช่น บันทึกแล้วได้ ID 15)
-  const userBookings = ref([])      // เก็บประวัติการจองทั้งหมดของผู้ใช้นั้นๆ
-  const isFlightsLoaded = ref(false)// ตัวเช็คว่า "โหลดข้อมูลเที่ยวบินมาหรือยัง?" (จะได้ไม่ต้องโหลดซ้ำ)
+  const flights = ref([])           // รายการเที่ยวบินทั้งหมด
+  const selectedFlight = ref(null)  // เที่ยวบินที่ลูกค้าเลือก
+  const passengerDetails = ref(null)// ข้อมูลผู้โดยสาร
+  const bookingId = ref(null)       // รหัสการจอง
+  const userBookings = ref([])      // ประวัติการจองของผู้ใช้
+
+  // --- MOCK DATA (เที่ยวบินจำลอง) ---
+  const MOCK_FLIGHTS = [
+    { id: 1, flightNumber: 'PG201', from_city: 'Bangkok (BKK)', to_city: 'Chiang Mai (CNX)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '08:00' }, arrival: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '09:15' }, duration: '1h 15m', price: 1500, seats: 20 },
+    { id: 2, flightNumber: 'PG202', from_city: 'Chiang Mai (CNX)', to_city: 'Bangkok (BKK)', departure: { city: 'Chiang Mai', airport: 'Chiang Mai (CNX)', time: '10:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '11:45' }, duration: '1h 15m', price: 1500, seats: 15 },
+    { id: 3, flightNumber: 'PG301', from_city: 'Bangkok (BKK)', to_city: 'Phuket (HKT)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '13:00' }, arrival: { city: 'Phuket', airport: 'Phuket (HKT)', time: '14:30' }, duration: '1h 30m', price: 2200, seats: 5 },
+    { id: 4, flightNumber: 'PG302', from_city: 'Phuket (HKT)', to_city: 'Bangkok (BKK)', departure: { city: 'Phuket', airport: 'Phuket (HKT)', time: '15:30' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '17:00' }, duration: '1h 30m', price: 2200, seats: 10 },
+    { id: 5, flightNumber: 'PG401', from_city: 'Bangkok (BKK)', to_city: 'Samui (USM)', departure: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '09:00' }, arrival: { city: 'Samui', airport: 'Samui (USM)', time: '10:00' }, duration: '1h 00m', price: 3500, seats: 8 },
+    { id: 6, flightNumber: 'PG402', from_city: 'Samui (USM)', to_city: 'Bangkok (BKK)', departure: { city: 'Samui', airport: 'Samui (USM)', time: '11:00' }, arrival: { city: 'Bangkok', airport: 'Bangkok (BKK)', time: '12:00' }, duration: '1h 00m', price: 3500, seats: 12 }
+  ]
+
+  // MOCK DATABASE (เก็บประวัติการจองใน RAM Browser) - อยู่ข้างนอกจะได้ไม่หายเวลาเปลี่ยนหน้า
+  // (Note: ถ้า Refresh Browser ข้อมูลนี้จะหาย ก็ถูกต้องตาม Requirement User)
+  let mockBookingsDB = [] 
 
   // ==========================================
   // 2. ACTIONS (ฟังก์ชันทำงาน)
   // ==========================================
 
-  // --- ฟังก์ชันดึงข้อมูลเที่ยวบินทั้งหมด (เรียกตอนเข้าหน้าแรก) ---
-  // ไปดึงจาก Server: GET /api/flights
+  // จำลองการดึงข้อมูลเที่ยวบิน
   async function fetchFlights() {
-    // ถ้าเคยโหลดมาแล้ว และมีข้อมูลอยู่แล้ว -> ไม่ต้องโหลดซ้ำ (ประหยัดเน็ต)
-    if (isFlightsLoaded.value && flights.value.length > 0) return 
-    
-    try {
-      // ยิง Request ไปขอข้อมูล
-      const response = await fetch('http://localhost:3001/api/flights')
-      const data = await response.json() // แปลงเป็น JSON
-      flights.value = data               // เอาข้อมูลใส่ตัวแปร flights
-      isFlightsLoaded.value = true       // จำไว้ว่า "โหลดเสร็จแล้วนะ"
-    } catch (error) {
-      console.error('Error fetching flights:', error)
-    }
+    // ดึงปุ๊บ ได้ปั๊บ (ไม่ต้องรอโหลด)
+    flights.value = MOCK_FLIGHTS
   }
 
-  // --- ฟังก์ชันดึงประวัติการจองของผู้ใช้ (เรียกหน้าประวัติ) ---
-  // ไปดึงจาก Server: GET /api/users/:userId/bookings
+  // จำลองการดึงประวัติการจอง
   async function fetchUserBookings(userId) {
-    if (!userId) return // ถ้าไม่มี User ID ก็จบงานเลย
-    try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}/bookings`)
-      const data = await response.json()
-      userBookings.value = data // เอาประวัติใส่ตัวแปร userBookings
-    } catch (error) {
-      console.error('Error fetching bookings:', error)
-    }
+    if (!userId) return
+    // Filter bookings for this user
+    userBookings.value = mockBookingsDB.filter(b => b.userId === userId)
   }
 
-  // --- ฟังก์ชันเลือกเที่ยวบิน (เรียกตอนกดปุ่ม "เลือก" ที่การ์ดเที่ยวบิน) ---
+  // เลือกเที่ยวบิน
   function selectFlight(flight) {
-    selectedFlight.value = flight // จำไว้ว่าลูกค้าเลือกไฟลท์นี้นะ
+    selectedFlight.value = flight
   }
 
-  // --- ฟังก์ชันยืนยันการจอง (เรียกตอนกด "ยืนยันการจอง" ที่หน้ากรอกชื่อ) ---
-  // ไปบันทึกที่ Server: POST /api/bookings
-  async function confirmBooking(userId, details) {
-    passengerDetails.value = details // จำชื่อผู้โดยสารไว้ก่อน
-
-    // ถ้ายังไม่ได้เลือกเที่ยวบิน -> แจ้ง Error
-    if (!selectedFlight.value) return { success: false, error: 'No flight selected' }
-
-    // สร้างข้อมูลจำลอง (เลขตั๋ว, เลขที่นั่ง) *ของจริงอาจต้องให้ Server คิดให้
-    const bookingRef = `BK${Date.now()}` // สุ่มเลขตั๋วจากเวลาปัจจุบัน
-    const seatNum = '12A'                // กำหนดที่นั่ง (Fix ไว้ก่อน)
-
+  // จำลองการบันทึกการจอง
+  async function confirmBooking(userId, userDetails) {
     try {
-      // ยิงข้อมูลไปบันทึกจริงใน Database
-      const response = await fetch('http://localhost:3001/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          flightId: selectedFlight.value.id,
-          bookingReference: bookingRef,
-          seatNumber: seatNum 
-        })
-      })
-      const result = await response.json()
+      passengerDetails.value = userDetails
       
-      // ถ้าบันทึกสำเร็จ
-      if (result.success) {
-        bookingId.value = result.bookingId // เก็บ ID การจองที่ได้มา
-        
-        // อัปเดตข้อมูลตั๋วให้ครบถ้วน (เอาไว้โชว์หน้า Success)
-        passengerDetails.value = {
-            ...details,
-            bookingReference: bookingRef,
-            seatNumber: seatNum
-        }
-
-        return { success: true, bookingId: result.bookingId }
+      // Create new booking record
+      const newBooking = {
+        id: Math.floor(Math.random() * 10000),
+        userId: userId,
+        bookingReference: 'BK' + Math.floor(Math.random() * 100000),
+        seatNumber: 'A' + (Math.floor(Math.random() * 30) + 1),
+        flight: selectedFlight.value, // เก็บ object เที่ยวบิน
+        createdAt: new Date()
       }
-      return { success: false, error: 'Booking failed on server' }
+
+      // Save to "Mock DB"
+      mockBookingsDB.unshift(newBooking)
+      
+      bookingId.value = newBooking.id
+      return { success: true, bookingId: newBooking.id }
+
     } catch (error) {
       console.error('Booking failed:', error)
-      return { success: false, error: 'Connection error' }
+      return { success: false, error: 'เกิดข้อผิดพลาดในการจอง' }
     }
   }
 
-  // --- ฟังก์ชันล้างข้อมูล (เรียกตอนจองเสร็จ หรือเริ่มใหม่) ---
+  // ล้างข้อมูลหน้าจอ
   function clearSelection() {
-    selectedFlight.value = null   // ล้างเที่ยวบินที่เลือก
-    bookingId.value = null        // ล้างเลข Booking ID
-    passengerDetails.value = null // ล้างข้อมูลผู้โดยสาร
-    // (หมายเหตุ: ข้อมูลใน Database ไม่หาย หายแค่หน้าจอ)
+    selectedFlight.value = null
+    bookingId.value = null
+    passengerDetails.value = null
   }
 
   // ==========================================
-  // 3. RETURN (ส่งออกให้คนอื่นใช้)
+  // 3. RETURN
   // ==========================================
   return {
-    // ตัวแปร (State)
     flights,
     selectedFlight,
     passengerDetails,
     bookingId,
     userBookings,
-    
-    // ฟังก์ชัน (Actions)
     fetchFlights,
     fetchUserBookings,
     selectFlight,

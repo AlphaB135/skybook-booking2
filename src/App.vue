@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white font-sans text-slate-900">
     <!-- Navbar (แสดงตลอด ยกเว้นหน้า Login/Register) -->
     <Navbar 
-      v-if="!['login', 'register'].includes($route.name)" 
+      v-if="!['login', 'register'].includes(route.name)" 
       :currentUser="authStore.currentUser" 
       :activeTab="activeTab"
     />
