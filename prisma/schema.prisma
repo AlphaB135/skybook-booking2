@@ -21,6 +21,8 @@ model flights {
 model users {
   id         Int        @id @default(autoincrement())
   name       String     @db.VarChar(255)
+  lastname   String?    @db.VarChar(255)
+  email      String?    @db.VarChar(255)
   phone      String     @db.VarChar(20)
   image      String?    @db.VarChar(500)
   created_at DateTime?  @default(now()) @db.Timestamp(0)
